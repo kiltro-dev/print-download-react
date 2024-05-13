@@ -71,7 +71,14 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        padding: "2rem",
+        margin: "0 auto",
+        textAlign: "center",
+        maxWidth: "900px",
+      }}
+    >
       <h1>Imprimir y Descargar</h1>
       <div id="pdf-content">
         <PDFContent />
