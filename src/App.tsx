@@ -1,66 +1,87 @@
-import React from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-// Componente que define el contenido del PDF
 const PDFContent = () => {
   return (
-    <div
+    <table
       style={{
         fontFamily: "Arial",
-        fontSize: "16px",
-        color: "#eee",
-        backgroundColor: "#242424",
-        padding: "1rem",
+        borderCollapse: "collapse",
+        width: "100%",
+        background: "#242424",
+        marginBottom: "1rem",
       }}
     >
-      <p>¡Hola, este es un PDF generado desde React!</p>
-      <p>Este es un párrafo de ejemplo con algunos estilos CSS aplicados.</p>
-      <ul>
-        <li>Elemento de lista 1</li>
-        <li>Elemento de lista 2</li>
-        <li>Elemento de lista 3</li>
-      </ul>
-    </div>
+      <thead>
+        <tr style={{ backgroundColor: "#242424", color: "#fff" }}>
+          <th style={{ border: "1px solid #ddd", padding: "8px" }}>Nombre</th>
+          <th style={{ border: "1px solid #ddd", padding: "8px" }}>Edad</th>
+          <th style={{ border: "1px solid #ddd", padding: "8px" }}>País</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style={{ backgroundColor: "#242424", color: "#fff" }}>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>Juan</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>25</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>España</td>
+        </tr>
+        <tr style={{ backgroundColor: "#242424", color: "#fff" }}>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>María</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>30</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>Francia</td>
+        </tr>
+        <tr style={{ backgroundColor: "#242424", color: "#fff" }}>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>Carlos</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>22</td>
+          <td style={{ border: "1px solid #ddd", padding: "8px" }}>Italia</td>
+        </tr>
+      </tbody>
+    </table>
   );
 };
 
-class App extends React.Component {
-  generateAndPrintPDF = () => {
-    // Generar el PDF
+const App = () => {
+  const generateAndPrintPDF = () => {
     const doc = new jsPDF();
-
-    // Obtener una referencia al elemento que quieres convertir a imagen
     const element = document.getElementById("pdf-content");
-
-    // Convertir el elemento a una imagen usando html2canvas
-    html2canvas(element).then((canvas) => {
-      // Convertir el canvas a una imagen en formato base64
-      const imgData = canvas.toDataURL("image/png");
-
-      // Agregar la imagen al PDF
-      doc.addImage(imgData, "PNG", 10, 10, 180, 0);
-
-      // Abrir la ventana de impresión
-      doc.autoPrint();
-      window.open(doc.output("bloburl"), "_blank");
-    });
+    if (element) {
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        doc.addImage(imgData, "PNG", 10, 10, 180, 0);
+        doc.autoPrint();
+        window.open(doc.output("bloburl"), "_blank");
+      });
+    } else {
+      console.error("No se encontró el elemento con el id 'pdf-content'");
+    }
   };
 
-  render() {
-    return (
-      <div>
-        <h1>Generar PDF e imprimir</h1>
-        <div id="pdf-content">
-          {/* Renderizamos el componente PDFContent */}
-          <PDFContent />
-        </div>
-        <button onClick={this.generateAndPrintPDF}>
-          Generar PDF e imprimir
-        </button>
+  const generateAndDownloadPDF = () => {
+    const doc = new jsPDF();
+    const element = document.getElementById("pdf-content");
+    if (element) {
+      html2canvas(element).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        doc.addImage(imgData, "PNG", 10, 10, 180, 0);
+        doc.save("documento.pdf");
+      });
+    } else {
+      console.error("No se encontró el elemento con el id 'pdf-content'");
+    }
+  };
+
+  return (
+    <div>
+      <h1>Imprimir y Descargar</h1>
+      <div id="pdf-content">
+        <PDFContent />
       </div>
-    );
-  }
-}
+      <button style={{ marginRight: "1rem" }} onClick={generateAndPrintPDF}>
+        Generar PDF e imprimir
+      </button>
+      <button onClick={generateAndDownloadPDF}>Generar PDF y descargar</button>
+    </div>
+  );
+};
 
 export default App;
